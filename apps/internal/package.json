@@ -1,0 +1,16 @@
+{
+  "name": "internal",
+  "scripts": {
+    "test": "vitest",
+    "cf:types": "wrangler types",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify"
+  },
+  "dependencies": {
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "wrangler": "^3.96.0"
+  }
+}

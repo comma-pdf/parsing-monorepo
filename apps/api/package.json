@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "test": "vitest",
+    "cf:types": "wrangler types"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.18.3",
+    "@repo/database": "workspace:*",
+    "@scalar/hono-api-reference": "^0.5.165",
+    "drizzle-orm": "^0.38.2",
+    "hono": "^4.6.14",
+    "uuid": "^11.0.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "wrangler": "^3.96.0"
+  }
+}
