@@ -1,3 +1,4 @@
+import upload from "@/parsing/upload"
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { users } from "@repo/database/schema"
 import { apiReference } from "@scalar/hono-api-reference"
@@ -25,6 +26,8 @@ app.use(
 app.get("/", (c) => {
   return c.text("Hello Hono!")
 })
+
+app.route("/api/parsing/upload", upload)
 
 /**
  * Register the Bearer Auth security scheme in OpenAPI.
