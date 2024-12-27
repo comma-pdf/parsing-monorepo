@@ -1,8 +1,6 @@
 import upload from "@/parsing/upload"
 import { OpenAPIHono } from "@hono/zod-openapi"
-import { users } from "@repo/database/schema"
 import { apiReference } from "@scalar/hono-api-reference"
-import { drizzle } from "drizzle-orm/d1"
 import { bearerAuth } from "hono/bearer-auth"
 
 const app = new OpenAPIHono<{ Bindings: Env }>()

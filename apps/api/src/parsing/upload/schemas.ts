@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi"
 
 const MAX_FILE_SIZE = 500000
 
-const CreateFileRequestSchema = z
+const UploadFileRequestSchema = z
   .object({
     file: z
       .instanceof(File)
@@ -23,4 +23,4 @@ const CreateFileRequestSchema = z
   })
   .required()
 
-export { CreateFileRequestSchema }
+export { UploadFileRequestSchema }
