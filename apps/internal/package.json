@@ -1,7 +1,6 @@
 {
   "name": "internal",
   "scripts": {
-    "test": "vitest",
     "cf:types": "wrangler types",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify"
