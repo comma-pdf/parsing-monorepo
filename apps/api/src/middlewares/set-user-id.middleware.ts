@@ -1,3 +1,4 @@
+import { EntToken } from "@repo/database/entities"
 import { createMiddleware } from "hono/factory"
 import { HTTPException } from "hono/http-exception"
 
@@ -6,6 +7,7 @@ const PREFIX = "Bearer"
 const HEADER = "Authorization"
 
 export const setUserId = createMiddleware<{
+  Bindings: Env
   Variables: { userId: number }
 }>(async (c, next) => {
   const regexp = new RegExp(`^${PREFIX} (${TOKEN_STRINGS}) *$`)
@@ -23,9 +25,8 @@ export const setUserId = createMiddleware<{
   }
 
   const token = match[1]
-  console.log("Token:", token)
+  const entToken = await EntToken.getByToken({ db: c.env.DB, token })
 
-  // TODO: Verify the token
-  c.set("userId", 123)
+  c.set("userId", entToken.userId)
   return await next()
 })

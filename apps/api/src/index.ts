@@ -1,5 +1,6 @@
 import upload from "@/parsing/upload"
 import { OpenAPIHono } from "@hono/zod-openapi"
+import { EntToken } from "@repo/database/entities"
 import { apiReference } from "@scalar/hono-api-reference"
 import { bearerAuth } from "hono/bearer-auth"
 
@@ -10,19 +11,23 @@ app.use(
   "/api/*",
   bearerAuth({
     verifyToken: async (token, c) => {
-      // Get the auth token from DB
-
-      // Get the token from the Authorization header
-
-      // Compare two tokens
-
-      return token === "dynamic-token"
+      try {
+        // Get the auth token from DB
+        const entToken = await EntToken.getByToken({ db: c.env.DB, token })
+        return !entToken.isRevoked
+      } catch (e) {
+        return false
+      }
     },
   })
 )
 
 app.get("/", (c) => {
   return c.text("Hello Hono!")
+})
+
+app.get("/api", (c) => {
+  return c.text("Hello Hono API!")
 })
 
 app.route("/api/parsing/upload", upload)

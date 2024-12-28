@@ -18,7 +18,8 @@ function getLocalD1DB() {
     const url = path.resolve(basePath, dbFile)
     return url
   } catch (err) {
-    console.log(`Error  ${err.message}`)
+    console.log(`Error ${err.message}`)
+    throw err
   }
 }
 
@@ -26,20 +27,7 @@ export default defineConfig({
   out: "./drizzle",
   schema: "./src/schema.ts",
   dialect: "sqlite",
-  ...(process.env.NODE_ENV === "production"
-    ? {
-        driver: "d1-http",
-        dbCredentials: {
-          accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
-          databaseId: process.env.CLOUDFLARE_DATABASE_ID!,
-          token: process.env.CLOUDFLARE_D1_TOKEN!,
-        },
-      }
-    : {
-        // driver: "sqlite",
-        dbCredentials: {
-          // url: "../../apps/api/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/<sqlite_filename>.sqlite",
-          url: getLocalD1DB(),
-        },
-      }),
+  dbCredentials: {
+    url: getLocalD1DB(),
+  },
 })

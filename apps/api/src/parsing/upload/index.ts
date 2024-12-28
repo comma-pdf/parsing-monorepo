@@ -79,15 +79,15 @@ app.openapi(
       })
 
       // 2. Create a new job
-      const endJob = await EntParsingJob.create({
+      const entJob = await EntParsingJob.create({
         db: c.env.DB,
         fileId: entFile.id,
       })
 
       // 3. Enqueue the job
       const job: Job = {
-        id: endJob.id,
-        status: endJob.status,
+        id: entJob.id,
+        status: entJob.status,
       }
       await c.env.JOB_QUEUE.send(job)
 

@@ -22,8 +22,9 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:push": "pnpm drizzle-kit push",
-    "db:generate": "pnpm drizzle-kit generate",
-    "db:migrate": "pnpm drizzle-kit migrate"
+    "db:generate": "pnpm drizzle-kit generate --config=drizzle-dev.config.ts",
+    "db:migrate:dev": "pnpm drizzle-kit migrate --config=drizzle-dev.config.ts",
+    "db:migrate:prod": "pnpm drizzle-kit migrate --config=drizzle-prod.config.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241218.0",

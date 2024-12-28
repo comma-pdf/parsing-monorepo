@@ -1,5 +1,11 @@
 import { relations } from "drizzle-orm"
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
+import {
+  index,
+  integer,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core"
 
 export const users = sqliteTable(
   "users",
@@ -8,8 +14,34 @@ export const users = sqliteTable(
     name: text("name").notNull(),
     email: text("email").notNull(),
   },
-  (t) => []
+  (t) => [uniqueIndex("email_index").on(t.email)]
 )
+
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(tokens),
+}))
+
+export const tokens = sqliteTable(
+  "tokens",
+  {
+    id: integer("id").primaryKey(),
+    userId: integer("userId")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    token: text("token").notNull(),
+    isRevoked: integer("is_revoked", { mode: "boolean" })
+      .notNull()
+      .default(false),
+  },
+  (t) => [uniqueIndex("token_index").on(t.token)]
+)
+
+export const tokensRelations = relations(tokens, ({ one }) => ({
+  owner: one(users, {
+    fields: [tokens.userId],
+    references: [users.id],
+  }),
+}))
 
 export const files = sqliteTable(
   "files",

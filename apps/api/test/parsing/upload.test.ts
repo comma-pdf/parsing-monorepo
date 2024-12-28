@@ -1,14 +1,32 @@
 import { Job } from "@/parsing/schemas"
 import app from "@/parsing/upload"
-import { EntParsingFile, EntParsingJob } from "@repo/database/entities"
+import {
+  EntParsingFile,
+  EntParsingJob,
+  EntToken,
+  EntUser,
+} from "@repo/database/entities"
 import {
   createExecutionContext,
   env,
   waitOnExecutionContext,
 } from "cloudflare:test"
-import { describe, expect, test } from "vitest"
+import { beforeAll, describe, expect, test } from "vitest"
 
 describe("Upload", () => {
+  beforeAll(async () => {
+    const user = await EntUser.create({
+      db: env.DB,
+      name: "test",
+      email: "test@gmail.com",
+    })
+    await EntToken.create({
+      db: env.DB,
+      userId: user.id,
+      token: "dynamic-token",
+    })
+  })
+
   test("POST /", async () => {
     const formData = new FormData()
     formData.append(
