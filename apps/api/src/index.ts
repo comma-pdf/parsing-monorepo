@@ -31,8 +31,8 @@ app.get("/api", (c) => {
   return c.text("Hello Hono API!")
 })
 
-app.route("/api/parsing/upload", upload)
-app.route("/api/parsing/jobs", jobs)
+app.route("/api/v1/parsing/upload", upload)
+app.route("/api/v1/parsing/jobs", jobs)
 
 /**
  * Register the Bearer Auth security scheme in OpenAPI.
