@@ -28,6 +28,8 @@ jobs:
         run: pnpm install
       - name: Test
         run: pnpm test
+      - name: "Build"
+        run: pnpm build
       - name: "Build & Deploy Worker: api"
         uses: cloudflare/wrangler-action@v3
         with:
