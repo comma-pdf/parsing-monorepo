@@ -32,6 +32,7 @@ interface EntParsingJobParams {
   status: JobStatus
   fileId: number
   error?: string
+  markdownResultFileId?: number
 }
 
 class EntParsingJob {
@@ -39,17 +40,20 @@ class EntParsingJob {
   status: JobStatus
   fileId: number
   error?: string
+  markdownResultFileId?: number
 
   private constructor({
     id,
     fileId,
     status = JobStatus.Pending,
     error,
+    markdownResultFileId,
   }: EntParsingJobParams) {
     this.id = id
     this.fileId = fileId
     this.status = status
     this.error = error
+    this.markdownResultFileId = markdownResultFileId
   }
 
   static async create({ db, fileId }: { db: D1Database; fileId: number }) {
@@ -59,7 +63,6 @@ class EntParsingJob {
       .values({
         status: "pending",
         fileId: fileId,
-        error: null,
       })
       .returning({ id: jobs.id })
     if (!result || result.length !== 1) {
@@ -95,6 +98,7 @@ class EntParsingJob {
       status: jobStatus,
       fileId: job.fileId,
       error: job.error || undefined,
+      markdownResultFileId: job.markdownResultFileId || undefined,
     })
   }
 
@@ -106,10 +110,11 @@ class EntParsingJob {
         status: this.status,
         fileId: this.fileId,
         error: this.error,
+        markdownResultFileId: this.markdownResultFileId,
       })
       .where(eq(jobs.id, this.id))
       .execute()
   }
 }
 
-export { EntParsingJob, JobStatus }
+export { EntParsingJob, JobStatus, stringToJobStatus }

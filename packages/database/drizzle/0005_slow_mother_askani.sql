@@ -1,0 +1,1 @@
+ALTER TABLE `jobs` ADD `markdown_result_file_id` integer REFERENCES files(id);

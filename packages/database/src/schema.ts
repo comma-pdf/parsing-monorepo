@@ -61,6 +61,9 @@ export const jobs = sqliteTable(
     fileId: integer("fileId")
       .references(() => files.id)
       .notNull(),
+    markdownResultFileId: integer("markdown_result_file_id").references(
+      () => files.id
+    ),
     error: text("error"),
   },
   (t) => []
@@ -69,6 +72,13 @@ export const jobs = sqliteTable(
 export const jobRelations = relations(jobs, ({ one }) => ({
   file: one(files, {
     fields: [jobs.fileId],
+    references: [files.id],
+  }),
+}))
+
+export const jobMarkdownResultRelations = relations(jobs, ({ one }) => ({
+  markdownResultFile: one(files, {
+    fields: [jobs.markdownResultFileId],
     references: [files.id],
   }),
 }))

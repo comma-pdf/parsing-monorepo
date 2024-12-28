@@ -73,6 +73,15 @@ class EntParsingFile {
     this.name = name
     this.key = key
   }
+
+  async getFileContent(oss: R2Bucket) {
+    const object = await oss.get(this.key)
+    if (!object) {
+      throw new Error("File not found")
+    }
+    const content = await object.text()
+    return content
+  }
 }
 
 export { EntParsingFile }
