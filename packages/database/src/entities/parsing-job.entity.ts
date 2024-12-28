@@ -53,8 +53,6 @@ class EntParsingJob {
   }
 
   static async create({ db, fileId }: { db: D1Database; fileId: number }) {
-    console.log("Creating job with fileId:", fileId)
-
     // Create a new job in the database
     const result = await drizzle(db)
       .insert(jobs)

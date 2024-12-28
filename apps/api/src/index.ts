@@ -1,3 +1,4 @@
+import jobs from "@/parsing/jobs"
 import upload from "@/parsing/upload"
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { EntToken } from "@repo/database/entities"
@@ -31,6 +32,7 @@ app.get("/api", (c) => {
 })
 
 app.route("/api/parsing/upload", upload)
+app.route("/api/parsing/jobs", jobs)
 
 /**
  * Register the Bearer Auth security scheme in OpenAPI.

@@ -53,7 +53,6 @@ describe("Upload", () => {
       ctx
     )
     const body = await res.json<Job>()
-    console.log(JSON.stringify(body, null, 2))
 
     // Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
     await waitOnExecutionContext(ctx)
