@@ -30,9 +30,15 @@ jobs:
         run: pnpm build
       - name: Test
         run: pnpm test
-      - name: "Build & Deploy Worker: api"
+      - name: "Build & Deploy Worker: apps/api"
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: "apps/api"
+      - name: "Build & Deploy Worker: apps/internal"
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: "apps/internal"
