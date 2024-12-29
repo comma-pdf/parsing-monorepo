@@ -102,6 +102,12 @@ class EntParsingJob {
     })
   }
 
+  static async getOrFail({ db, id }: { db: D1Database; id: number }) {
+    // Get the job from the database
+    const job = await this.get({ db, id })
+    return job
+  }
+
   async save({ db }: { db: D1Database }) {
     // Save the job to the database
     await drizzle(db)

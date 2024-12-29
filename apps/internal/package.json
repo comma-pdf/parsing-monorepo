@@ -1,11 +1,15 @@
 {
   "name": "internal",
   "scripts": {
-    "cf:types": "wrangler types",
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify"
+    "typegen": "wrangler types",
+    "dev": "wrangler dev --persist-to ../api/.wrangler/state",
+    "deploy": "wrangler deploy --minify",
+    "test": "vitest"
   },
   "dependencies": {
+    "@hono/zod-openapi": "^0.18.3",
+    "@repo/database": "workspace:*",
+    "@scalar/hono-api-reference": "^0.5.165",
     "hono": "^4.6.14"
   },
   "devDependencies": {

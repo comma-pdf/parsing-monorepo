@@ -1,3 +1,5 @@
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { D1Database, File, R2Bucket } from "@cloudflare/workers-types"
 import { eq, gte, lt, ne } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/d1"
@@ -68,6 +70,14 @@ class EntParsingFile {
     return new EntParsingFile({ id: file.id, name: file.name, key: file.key })
   }
 
+  static async getOrFail({ db, id }: { db: D1Database; id: number }) {
+    try {
+      return await EntParsingFile.get({ db, id })
+    } catch (error) {
+      throw new Error("File not found")
+    }
+  }
+
   private constructor({ id, name, key }: EntParsingFileParams) {
     this.id = id
     this.name = name
@@ -81,6 +91,34 @@ class EntParsingFile {
     }
     const content = await object.text()
     return content
+  }
+
+  async getSignedUrl({
+    bucketName,
+    endpoint,
+    accessKeyId,
+    secretAccessKey,
+  }: {
+    bucketName: string
+    endpoint: string
+    accessKeyId: string
+    secretAccessKey: string
+  }) {
+    const S3 = new S3Client({
+      region: "auto",
+      endpoint,
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+    })
+    const signedUrl = await getSignedUrl(
+      S3,
+      new GetObjectCommand({ Bucket: bucketName, Key: this.key }),
+      { expiresIn: 3600 }
+    )
+
+    return signedUrl
   }
 }
 
