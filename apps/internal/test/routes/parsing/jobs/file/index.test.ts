@@ -1,4 +1,4 @@
-import app from "@/routes/parsing/jobs"
+import app from "@/routes/parsing/jobs/file"
 import {
   EntParsingFile,
   EntParsingJob,

@@ -2,7 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi"
 import { apiReference } from "@scalar/hono-api-reference"
 import { bearerAuth } from "hono/bearer-auth"
 
-import jobsRoute from "./routes/parsing/jobs"
+import jobsFileRoute from "./routes/parsing/jobs/file"
 
 interface EnvWithSecret extends Env {
   API_KEY: string
@@ -27,7 +27,7 @@ app.get("/internal", (c) => {
   return c.text("Hello Hono API!")
 })
 
-app.route("/internal/v1/parsing/jobs", jobsRoute)
+app.route("/internal/v1/parsing/jobs", jobsFileRoute)
 
 /**
  * Register the Bearer Auth security scheme in OpenAPI.
