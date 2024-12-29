@@ -1,5 +1,9 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { EntParsingFile, EntParsingJob } from "@repo/database/entities"
+import {
+  EntParsingFile,
+  EntParsingJob,
+  JobStatus,
+} from "@repo/database/entities"
 
 import { JobResultRequest } from "./schemas"
 
@@ -33,7 +37,7 @@ const jobResultRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            resultFileId: z.number(),
+            jobId: z.number(),
           }),
         },
       },
@@ -67,7 +71,7 @@ const jobResultRoute = createRoute({
 app.openapi(jobResultRoute, async (c) => {
   try {
     const body = await c.req.json<JobResultRequest>()
-    const result = body.result
+    const result = body.markdown
 
     const jobId = parseInt(c.req.param("jobId"))
     const job = await EntParsingJob.getOrFail({ db: c.env.DB, id: jobId })
@@ -85,7 +89,11 @@ app.openapi(jobResultRoute, async (c) => {
       file: new File([result], resultFileName, { type: "text/markdown" }),
     })
 
-    return c.json({ resultFileId: resultFile.id }, 200)
+    job.markdownResultFileId = resultFile.id
+    job.status = JobStatus.Completed
+    await job.save({ db: c.env.DB })
+
+    return c.json({ jobId: job.id }, 200)
   } catch (e) {
     console.error(e)
     if (e instanceof Error) {

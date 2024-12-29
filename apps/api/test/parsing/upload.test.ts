@@ -73,5 +73,7 @@ describe("Upload", () => {
       id: entParsingJob.id,
       status: entParsingJob.status,
     })
+
+    expect(await entParsingFile.getFileContent(env.FILE_BUCKET)).toBe("abc")
   })
 })

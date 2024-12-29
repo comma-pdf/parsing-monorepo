@@ -10,7 +10,7 @@ import {
   env,
   waitOnExecutionContext,
 } from "cloudflare:test"
-import { describe, expect, test } from "vitest"
+import { assert, describe, expect, test } from "vitest"
 
 describe("Job result", () => {
   test("POST /:jobId/result", async () => {
@@ -51,12 +51,29 @@ describe("Job result", () => {
       env,
       ctx
     )
+    // Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
+    await waitOnExecutionContext(ctx)
 
     const body = await result.json()
 
     expect(body).toMatchObject({
-      resultFileId: expect.any(Number),
+      jobId: job.id,
     })
     expect(result.status).toBe(200)
+
+    const updatedJob = await EntParsingJob.getOrFail({
+      db: env.DB,
+      id: job.id,
+    })
+    expect(updatedJob.status).toBe("completed")
+    expect(updatedJob.markdownResultFileId).toBeDefined()
+
+    assert(updatedJob.markdownResultFileId)
+    const markdownFile = await EntParsingFile.getOrFail({
+      db: env.DB,
+      id: updatedJob.markdownResultFileId,
+    })
+    const content = await markdownFile.getFileContent(env.FILE_BUCKET)
+    expect(content).toBe("test")
   })
 })

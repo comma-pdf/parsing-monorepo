@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi"
 
 const jobResultRequestSchema = z.object({
-  result: z.string().openapi({
+  markdown: z.string().openapi({
     type: "string",
     description: "The result of the parsing job",
   }),
