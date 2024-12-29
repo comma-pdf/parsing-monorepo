@@ -3,6 +3,7 @@ import { apiReference } from "@scalar/hono-api-reference"
 import { bearerAuth } from "hono/bearer-auth"
 
 import jobsFileRoute from "./routes/parsing/jobs/file"
+import jobsResultRoute from "./routes/parsing/jobs/result"
 
 interface EnvWithSecret extends Env {
   API_KEY: string
@@ -28,6 +29,7 @@ app.get("/internal", (c) => {
 })
 
 app.route("/internal/v1/parsing/jobs", jobsFileRoute)
+app.route("/internal/v1/parsing/jobs", jobsResultRoute)
 
 /**
  * Register the Bearer Auth security scheme in OpenAPI.

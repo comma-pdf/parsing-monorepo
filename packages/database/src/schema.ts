@@ -1,6 +1,5 @@
 import { relations } from "drizzle-orm"
 import {
-  index,
   integer,
   sqliteTable,
   text,
@@ -18,14 +17,15 @@ export const users = sqliteTable(
 )
 
 export const usersRelations = relations(users, ({ many }) => ({
-  posts: many(tokens),
+  tokens: many(tokens),
+  jobs: many(jobs),
 }))
 
 export const tokens = sqliteTable(
   "tokens",
   {
     id: integer("id").primaryKey(),
-    userId: integer("userId")
+    userId: integer("user_id")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
     token: text("token").notNull(),
@@ -58,7 +58,10 @@ export const jobs = sqliteTable(
   {
     id: integer("id").primaryKey(),
     status: text("status").notNull(),
-    fileId: integer("fileId")
+    ownerId: integer("owner_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    fileId: integer("file_id")
       .references(() => files.id)
       .notNull(),
     markdownResultFileId: integer("markdown_result_file_id").references(
@@ -74,9 +77,10 @@ export const jobRelations = relations(jobs, ({ one }) => ({
     fields: [jobs.fileId],
     references: [files.id],
   }),
-}))
-
-export const jobMarkdownResultRelations = relations(jobs, ({ one }) => ({
+  owner: one(users, {
+    fields: [jobs.ownerId],
+    references: [users.id],
+  }),
   markdownResultFile: one(files, {
     fields: [jobs.markdownResultFileId],
     references: [files.id],

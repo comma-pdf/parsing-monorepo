@@ -81,6 +81,7 @@ app.openapi(
       // 2. Create a new job
       const entJob = await EntParsingJob.create({
         db: c.env.DB,
+        ownerId: userId,
         fileId: entFile.id,
       })
 

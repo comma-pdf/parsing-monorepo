@@ -34,6 +34,7 @@ describe("Jobs", () => {
     })
     const job = await EntParsingJob.create({
       db: env.DB,
+      ownerId: user.id,
       fileId: file.id,
     })
 
@@ -80,6 +81,7 @@ describe("Jobs", () => {
     })
     const job = await EntParsingJob.create({
       db: env.DB,
+      ownerId: user.id,
       fileId: file.id,
     })
     job.status = JobStatus.Completed

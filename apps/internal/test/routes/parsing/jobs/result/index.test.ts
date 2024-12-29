@@ -1,4 +1,4 @@
-import app from "@/routes/parsing/jobs/file"
+import app from "@/routes/parsing/jobs/result"
 import {
   EntParsingFile,
   EntParsingJob,
@@ -10,14 +10,10 @@ import {
   env,
   waitOnExecutionContext,
 } from "cloudflare:test"
-import { beforeAll, describe, expect, test, vi } from "vitest"
+import { describe, expect, test } from "vitest"
 
-describe("Job file", () => {
-  test("GET /:jobId/file", async () => {
-    const mockGetSignedUrl = vi
-      .spyOn(EntParsingFile.prototype, "getSignedUrl")
-      .mockReturnValue(Promise.resolve("test-signed-url"))
-
+describe("Job result", () => {
+  test("POST /:jobId/result", async () => {
     const user = await EntUser.create({
       db: env.DB,
       name: "test",
@@ -42,23 +38,24 @@ describe("Job file", () => {
 
     const ctx = createExecutionContext()
     const result = await app.request(
-      `/${job.id}/file`,
+      `/${job.id}/result`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: "Bearer dynamic-token",
         },
+        body: JSON.stringify({
+          markdown: "test",
+        }),
       },
       env,
       ctx
     )
-    // Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
-    await waitOnExecutionContext(ctx)
 
     const body = await result.json()
 
     expect(body).toMatchObject({
-      signedUrl: "test-signed-url",
+      resultFileId: expect.any(Number),
     })
     expect(result.status).toBe(200)
   })

@@ -30,6 +30,7 @@ function stringToJobStatus(status: string): JobStatus | undefined {
 interface EntParsingJobParams {
   id: number
   status: JobStatus
+  ownerId: number
   fileId: number
   error?: string
   markdownResultFileId?: number
@@ -38,30 +39,42 @@ interface EntParsingJobParams {
 class EntParsingJob {
   id: number
   status: JobStatus
+  ownerId: number
   fileId: number
   error?: string
   markdownResultFileId?: number
 
   private constructor({
     id,
+    ownerId,
     fileId,
     status = JobStatus.Pending,
     error,
     markdownResultFileId,
   }: EntParsingJobParams) {
     this.id = id
+    this.ownerId = ownerId
     this.fileId = fileId
     this.status = status
     this.error = error
     this.markdownResultFileId = markdownResultFileId
   }
 
-  static async create({ db, fileId }: { db: D1Database; fileId: number }) {
+  static async create({
+    db,
+    ownerId,
+    fileId,
+  }: {
+    db: D1Database
+    ownerId: number
+    fileId: number
+  }) {
     // Create a new job in the database
     const result = await drizzle(db)
       .insert(jobs)
       .values({
         status: "pending",
+        ownerId: ownerId,
         fileId: fileId,
       })
       .returning({ id: jobs.id })
@@ -72,6 +85,7 @@ class EntParsingJob {
     return new EntParsingJob({
       id: result.at(0)!.id,
       status: JobStatus.Pending,
+      ownerId,
       fileId,
     })
   }
@@ -96,6 +110,7 @@ class EntParsingJob {
     return new EntParsingJob({
       id: job.id,
       status: jobStatus,
+      ownerId: job.ownerId,
       fileId: job.fileId,
       error: job.error || undefined,
       markdownResultFileId: job.markdownResultFileId || undefined,

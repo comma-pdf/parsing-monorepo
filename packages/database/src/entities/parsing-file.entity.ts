@@ -14,9 +14,9 @@ interface EntParsingFileParams {
 }
 
 class EntParsingFile {
-  id: number
-  name: string
-  key: string
+  readonly id: number
+  readonly name: string
+  readonly key: string
 
   static async create({
     db,
