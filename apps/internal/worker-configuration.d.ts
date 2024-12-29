@@ -2,6 +2,10 @@
 
 interface Env {
 	API_KEY: string;
+	R2_TOKEN: string;
+	R2_ACCESS_KEY_ID: string;
+	R2_SECRET_ACCESS_KEY: string;
+	R2_ENDPOINT: string;
 	FILE_BUCKET: R2Bucket;
 	DB: D1Database;
 }

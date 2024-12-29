@@ -10,10 +10,14 @@ import {
   env,
   waitOnExecutionContext,
 } from "cloudflare:test"
-import { beforeAll, describe, expect, test } from "vitest"
+import { beforeAll, describe, expect, test, vi } from "vitest"
 
 describe("Jobs", () => {
   test("GET /:jobId/file", async () => {
+    const mockGetSignedUrl = vi
+      .spyOn(EntParsingFile.prototype, "getSignedUrl")
+      .mockReturnValue(Promise.resolve("test-signed-url"))
+
     const user = await EntUser.create({
       db: env.DB,
       name: "test",
@@ -53,7 +57,7 @@ describe("Jobs", () => {
     const body = await result.json()
 
     expect(body).toMatchObject({
-      signedUrl: expect.any(String),
+      signedUrl: "test-signed-url",
     })
     expect(result.status).toBe(200)
   })
