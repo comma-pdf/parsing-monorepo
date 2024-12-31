@@ -52,80 +52,65 @@ const uploadRoute = createRoute({
 })
 
 // Endpoint to upload files
-app.openapi(
-  uploadRoute,
-  async (c) => {
-    if (!c.var.userId) {
-      throw new HTTPException(401, {
-        message: "Unauthorized",
-        cause: "Missing userId",
-      })
-    }
-    const userId = c.var.userId
-
-    const body = await c.req.parseBody()
-    const file = body["file"]
-    if (typeof file === "string") {
-      throw new HTTPException(400, { message: "File must not be a string" })
-    }
-
-    try {
-      // 1. Create the file
-      const entFile = await EntParsingFile.create({
-        db: c.env.DB,
-        oss: c.env.FILE_BUCKET,
-        userId: userId,
-        file,
-      })
-
-      // 2. Create a new job
-      const entJob = await EntParsingJob.create({
-        db: c.env.DB,
-        ownerId: userId,
-        fileId: entFile.id,
-      })
-
-      // 3. Enqueue the job
-      const job: Job = {
-        id: entJob.id,
-        status: entJob.status,
-      }
-      await c.env.JOB_QUEUE.send(job)
-
-      return c.json(job, 201)
-    } catch (error) {
-      console.error("Error uploading file:", error)
-      if (error instanceof Error) {
-        return c.json(
-          {
-            code: 400,
-            message: error.message,
-          },
-          400
-        )
-      }
-
-      return c.json(
-        {
-          code: 400,
-          message: "Unknown error",
-        },
-        400
-      )
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json(
-        {
-          code: 400,
-          message: result.error.message,
-        },
-        400
-      )
-    }
-    return undefined
+app.openapi(uploadRoute, async (c) => {
+  if (!c.var.userId) {
+    throw new HTTPException(401, {
+      message: "Unauthorized",
+      cause: "Missing userId",
+    })
   }
-)
+  const userId = c.var.userId
+
+  const body = await c.req.parseBody()
+  const file = body["file"]
+  if (typeof file === "string") {
+    throw new HTTPException(400, { message: "File must not be a string" })
+  }
+
+  try {
+    // 1. Create the file
+    const entFile = await EntParsingFile.create({
+      db: c.env.DB,
+      oss: c.env.FILE_BUCKET,
+      userId: userId,
+      file,
+    })
+
+    // 2. Create a new job
+    const entJob = await EntParsingJob.create({
+      db: c.env.DB,
+      ownerId: userId,
+      fileId: entFile.id,
+    })
+
+    // 3. Enqueue the job
+    const job: Job = {
+      id: entJob.id,
+      status: entJob.status,
+    }
+    await c.env.JOB_QUEUE.send(job)
+
+    return c.json(job, 201)
+  } catch (error) {
+    console.error("Error uploading file:", error)
+    if (error instanceof Error) {
+      return c.json(
+        {
+          code: 400,
+          message: error.message,
+        },
+        400
+      )
+    }
+
+    return c.json(
+      {
+        code: 400,
+        message: "Unknown error",
+      },
+      400
+    )
+  }
+})
 
 export default app
