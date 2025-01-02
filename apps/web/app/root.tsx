@@ -24,7 +24,16 @@ export const meta: MetaFunction = () => [
 ]
 
 // Export as the root route loader
-export const loader: LoaderFunction = (args) => rootAuthLoader(args)
+export const loader: LoaderFunction = (args) => {
+  const { context } = args
+  const { env } = context.cloudflare
+  return rootAuthLoader(args, {
+    publishableKey: env.CLERK_PUBLISHABLE_KEY,
+    secretKey: env.CLERK_SECRET_KEY,
+    signInUrl: "/account/sign-in",
+    signUpUrl: "/account/sign-up",
+  })
+}
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
