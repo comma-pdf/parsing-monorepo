@@ -46,6 +46,10 @@ describe("Job result", () => {
         },
         body: JSON.stringify({
           markdown: "test",
+          jobMetadata: {
+            succeededPages: 1,
+            totalPages: 1,
+          },
         }),
       },
       env,
