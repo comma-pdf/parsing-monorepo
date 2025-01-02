@@ -3,7 +3,7 @@ import { z } from "@hono/zod-openapi"
 const JobSchema = z
   .object({
     id: z.number(),
-    status: z.enum(["pending", "running", "error", "completed"]),
+    status: z.enum(["pending", "started", "running", "error", "completed"]),
     errorMessage: z.string().optional(),
   })
   .openapi("Job")

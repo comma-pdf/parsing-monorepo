@@ -7,6 +7,7 @@ import { jobs } from "../schema.js"
 
 enum JobStatus {
   Pending = "pending",
+  Started = "started",
   Running = "running",
   Error = "error",
   Completed = "completed",
@@ -37,10 +38,10 @@ interface EntParsingJobParams {
 }
 
 class EntParsingJob {
-  id: number
+  readonly id: number
+  readonly ownerId: number
+  readonly fileId: number
   status: JobStatus
-  ownerId: number
-  fileId: number
   error?: string
   markdownResultFileId?: number
 
